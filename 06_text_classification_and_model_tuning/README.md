@@ -320,13 +320,13 @@ outputs/text_error_analysis/<dataset_name>/
 
 ## Output Directory Structure
 
-outputs/
-├─ text_features/   
-├─ text_hyperparameter_search/ 
-├─ text_model_comparison/
-├─ text_preprocessing/      
-├─ text_classification_baseline/
-└─ text_error_analysis/       
+outputs/  
+├─ text_features/  
+├─ text_hyperparameter_search/  
+├─ text_model_comparison/  
+├─ text_preprocessing/  
+├─ text_classification_baseline/  
+└─ text_error_analysis/        
 
 **Each run produces:**
 

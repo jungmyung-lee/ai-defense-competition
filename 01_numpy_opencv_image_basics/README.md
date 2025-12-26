@@ -75,12 +75,12 @@ This project serves as an **experimental platform for numerically interpreting i
 
 **01_numpy_opencv_image_basics/**
 │
-├── README.md
-├── affine_transform_examples.py
-├── brightness_contrast_adjust.py
-├── edge_detection_sobel_canny.py
-├── image_channel_split.py
-└── numpy_pixel_statistics.py
+├── README.md  
+├── affine_transform_examples.py  
+├── brightness_contrast_adjust.py  
+├── edge_detection_sobel_canny.py  
+├── image_channel_split.py  
+└── numpy_pixel_statistics.py  
 
 **All scripts output results under:**
 
@@ -216,12 +216,12 @@ outputs/pixel_statistics/<image_name>/
 
 ## Output Directory Structure
 
-outputs/
-├─ affine_transform/
-├─ brightness_contrast/
-├─ edge_detection/
-├─ image_channel_analysis/
-└─ pixel_statistics/
+outputs/  
+├─ affine_transform/  
+├─ brightness_contrast/  
+├─ edge_detection/  
+├─ image_channel_analysis/  
+└─ pixel_statistics/  
 
 Each run produces:
 

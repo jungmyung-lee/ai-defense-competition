@@ -68,11 +68,11 @@ The toolkit emphasizes:
 **03_yolov8_object_detection/**  
 │  
 ├── README.md  
-├── yolov8_inference_image.py  
-├── yolov8_video_detection.py  
+├── crop_detected_objects.py  
 ├── export_detection_boxes_to_csv.py  
 ├── object_counting_and_class_stats.py  
-└── crop_detected_objects.py  
+├── yolov8_inference_image.py  
+└── yolov8_video_detection.py  
 
 All outputs are written under:
 
@@ -246,12 +246,12 @@ outputs/object_crops/<source_name>/
 
 ## Output Directory Structure
 
-outputs/
-├─ yolov8_inference/  
-├─ yolov8_video/  
+outputs/  
+├─ object_crops/  
 ├─ detection_export/  
 ├─ detection_stats/  
-└─ object_crops/  
+├─ yolov8_inference/  
+└─ yolov8_video/    
 
 ---
 

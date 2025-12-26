@@ -91,7 +91,7 @@ This project serves as an **analysis platform for understanding classical CV pre
 
 ## Project Structure
 
-**02_image_thresholding_denoise_morphology/**
+**02_image_segmentation_and_preprocessing/**
 │  
 ├── adaptive_thresholding_example.py  
 ├── denoise_gaussian_median.py  

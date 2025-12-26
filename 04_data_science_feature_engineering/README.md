@@ -1,4 +1,4 @@
-# 04_data_analysis_preprocessing
+# 04_data_science_feature_engineering
 
 A collection of **data preprocessing, EDA, scaling, PCA, and outlier-analysis** utilities implemented using **pandas**, **NumPy**, **matplotlib**, and **scikit-learn**.
 
@@ -65,7 +65,7 @@ The toolkit emphasizes:
 
 ## Project Structure
 
-**04_data_analysis_preprocessing/**  
+**04_data_science_feature_engineering**  
 │  
 ├── README.md  
 ├── data_cleaning_missing_values.py  

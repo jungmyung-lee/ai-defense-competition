@@ -74,7 +74,7 @@ This project serves as an **experimental platform for numerically interpreting i
 ## Project Structure
 
 **01_numpy_opencv_image_basics/**
-│
+│  
 ├── README.md  
 ├── affine_transform_examples.py  
 ├── brightness_contrast_adjust.py  

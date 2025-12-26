@@ -262,12 +262,12 @@ outputs/pca_reduction/<dataset_name>/
 
 ## Output Directory Structure
 
-outputs/
-├─ data_cleaning/
-├─ eda_visual/
-├─ pca_reduction/
-├─ feature_scaling/
-└─ outlier_detection/
+outputs/  
+├─ data_cleaning/  
+├─ eda_visual/  
+├─ pca_reduction/  
+├─ feature_scaling/  
+└─ outlier_detection/  
 
 ---
 

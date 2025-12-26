@@ -247,11 +247,11 @@ outputs/object_crops/<source_name>/
 ## Output Directory Structure
 
 outputs/
-├─ yolov8_inference/
-├─ yolov8_video/
-├─ detection_export/
-├─ detection_stats/
-└─ object_crops/
+├─ yolov8_inference/  
+├─ yolov8_video/  
+├─ detection_export/  
+├─ detection_stats/  
+└─ object_crops/  
 
 ---
 

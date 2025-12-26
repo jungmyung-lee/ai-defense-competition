@@ -1,4 +1,4 @@
-# 05_ml_baseline_classification_toolkit
+# 05_model_baseline_and_evaluation
 
 A collection of **baseline ML classification, evaluation, and dataset splitting pipelines** implemented using **NumPy, pandas, and scikit-learn**.
 
@@ -42,7 +42,7 @@ This project implements a modular, experiment-driven **baseline ML evaluation to
 - RandomForest classification + feature importance export
 - stratified Train / Test dataset splitting pipeline
 
-The toolkit emphasizes:
+**The toolkit emphasizes:**
 
 - reproducible ML experiments  
 - numerically interpretable reports  
@@ -91,33 +91,24 @@ This project serves as an **evaluation-first ML experimentation toolkit**.
 
 ## Project Structure
 
-05_ml_baseline_classification_toolkit/
-│
-├── README.md
-├── baseline_logreg_classifier.py
-├── cross_validation_scores.py
-├── evaluation_metrics_report.py
-├── randomforest_classification.py
-└── train_test_split_pipeline.py
-
-sql
-코드 복사
+**05_model_baseline_and_evaluation**  
+│  
+├── README.md  
+├── baseline_logreg_classifier.py  
+├── cross_validation_scores.py  
+├── evaluation_metrics_report.py  
+├── randomforest_classification.py  
+└── train_test_split_pipeline.py  
 
 All outputs are stored under:
 
 ./outputs/
-
-yaml
-코드 복사
 
 ---
 
 ## Installation
 
 pip install numpy pandas scikit-learn
-
-yaml
-코드 복사
 
 ---
 
@@ -129,7 +120,7 @@ yaml
 
 **Logistic Regression Baseline Classifier**
 
-Trains a baseline classifier using:
+**Trains a baseline classifier using:**
 
 - standardized feature scaling
 - deterministic random seed
@@ -142,24 +133,18 @@ Trains a baseline classifier using:
 - Confusion matrix
 - Prediction CSV export
 
-Run:
+**Run:**
 
 python baseline_logreg_classifier.py
 --train dataset_train.csv
 --test dataset_test.csv
 --label label
 
-makefile
-코드 복사
-
-Output:
+**Output:**
 
 outputs/baseline_logreg/<dataset_name>/
 
-yaml
-코드 복사
-
-Includes:
+**Includes:**
 
 - `<name>_logreg_predictions.csv`
 - `<name>_logreg_baseline_report.txt`
@@ -170,7 +155,7 @@ Includes:
 
 **Stratified K-Fold Cross-Validation Score Runner**
 
-Supports selectable baseline models:
+**Supports selectable baseline models:**
 
 - Logistic Regression
 - RandomForest
@@ -180,11 +165,11 @@ Supports selectable baseline models:
 - Accuracy
 - Precision / Recall / F1 (macro + weighted)
 
-Then aggregates:
+**Then aggregates:**
 
 - mean & std across folds
 
-Run:
+**Run:**
 
 python cross_validation_scores.py
 --csv data.csv
@@ -192,17 +177,11 @@ python cross_validation_scores.py
 --k 5
 --model logreg
 
-makefile
-코드 복사
-
-Output:
+**Output:**
 
 outputs/cross_validation/<dataset_name>/
 
-yaml
-코드 복사
-
-Includes:
+**Includes:**
 
 - `<name>_cv_fold_scores.csv`
 - `<name>_cv_summary_report.txt`
@@ -218,9 +197,6 @@ Input CSV must contain:
 y_true
 y_pred
 
-markdown
-코드 복사
-
 **Computes:**
 
 - global metrics
@@ -228,22 +204,16 @@ markdown
 - support counts
 - confusion matrix
 
-Run:
+**Run:**
 
 python evaluation_metrics_report.py
 --csv model_predictions.csv
 
-makefile
-코드 복사
-
-Output:
+**Output:**
 
 outputs/evaluation_report/<result_name>/
 
-yaml
-코드 복사
-
-Includes:
+**Includes:**
 
 - `<name>_metrics_table.csv`
 - `<name>_evaluation_report.txt`
@@ -254,7 +224,7 @@ Includes:
 
 **RandomForest Classification Pipeline**
 
-Trains a configurable RandomForest model:
+**Trains a configurable RandomForest model:**
 
 - adjustable tree count
 - optional max depth
@@ -267,24 +237,18 @@ Trains a configurable RandomForest model:
 - Confusion matrix
 - Feature importance ranking
 
-Run:
+**Run:**
 
 python randomforest_classification.py
 --train dataset_train.csv
 --test dataset_test.csv
 --label label
 
-makefile
-코드 복사
-
-Output:
+**Output:**
 
 outputs/randomforest/<dataset_name>/
 
-yaml
-코드 복사
-
-Includes:
+**Includes:**
 
 - `<name>_rf_predictions.csv`
 - `<name>_rf_feature_importance.txt`
@@ -296,7 +260,7 @@ Includes:
 
 **Stratified Train / Test Split Tool**
 
-Features:
+**Features:**
 
 - stratified splitting by label
 - fixed random seed
@@ -308,24 +272,18 @@ Features:
 - test CSV
 - class distribution statistics
 
-Run:
+**Run:**
 
 python train_test_split_pipeline.py
 --csv data.csv
 --label label
 --test 0.2
 
-makefile
-코드 복사
-
-Output:
+**Output:**
 
 outputs/train_test_split/<dataset_name>/
 
-yaml
-코드 복사
-
-Includes:
+**Includes:**
 
 - `<name>_train.csv`
 - `<name>_test.csv`
@@ -335,17 +293,14 @@ Includes:
 
 ## Output Directory Structure
 
-outputs/
-├─ baseline_logreg/
-├─ cross_validation/
-├─ evaluation_report/
-├─ randomforest/
-└─ train_test_split/
+outputs/  
+├─ baseline_logreg/  
+├─ cross_validation/  
+├─ evaluation_report/  
+├─ randomforest/  
+└─ train_test_split/  
 
-yaml
-코드 복사
-
-Each run produces:
+**Each run produces:**
 
 - prediction tables  
 - numeric evaluation reports  

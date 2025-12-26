@@ -13,6 +13,24 @@ Each script runs as an independent CLI tool and generates both processed image a
 
 ---
 
+## Table of Contents
+
+- [Project Overview](#project-overview)
+- [Learning Objectives](#learning-objectives)
+- [Applications](#applications)
+- [Project Structure](#project-structure)
+- [Installation](#installation)
+- [Scripts](#scripts)
+  - [1) affine_transform_examples.py](#1-affine_transform_examplespy)
+  - [2) brightness_contrast_adjust.py](#2-brightness_contrast_adjustpy)
+  - [3) edge_detection_sobel_canny.py](#3-edge_detection_sobel_cannypy)
+  - [4) image_channel_split.py](#4-image_channel_splitpy)
+  - [5) numpy_pixel_statistics.py](#5-numpy_pixel_statisticspy)
+- [Output Directory Structure](#output-directory-structure)
+- [Dataset Notes](#dataset-notes)
+
+---
+
 ## Project Overview
 
 This project implements several foundational — yet interpretation-focused — image-processing operations, including:

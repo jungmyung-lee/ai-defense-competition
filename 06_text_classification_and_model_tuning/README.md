@@ -42,7 +42,7 @@ This project implements a lightweight but analysis-focused NLP experimentation t
 - research-driven exploratory modeling
 - interpretable classification workflows
 
-Core capabilities include:
+**Core capabilities include:**
 
 - reproducible text preprocessing pipelines
 - BoW / TF-IDF feature interpretation
@@ -51,7 +51,7 @@ Core capabilities include:
 - hyperparameter search with ranking reports
 - qualitative and quantitative error analysis
 
-The toolkit emphasizes:
+**The toolkit emphasizes:**
 
 - experiment reproducibility  
 - transparent preprocessing  
@@ -86,7 +86,7 @@ This project was developed to:
 
 ## Applications
 
-This toolkit is useful for:
+**This toolkit is useful for:**
 
 - NLP competition experimentation
 - dataset-specific feature analysis
@@ -110,7 +110,7 @@ This project serves as an **interpretation-centered NLP experimentation platform
 ├── text_logreg_baseline_classifier.py  
 └── text_misclassification_inspection.py  
 
-All outputs are written to:
+**All outputs are written to:**
 
 ./outputs/
 
@@ -130,7 +130,7 @@ pip install pandas numpy scikit-learn
 
 Text normalization and preprocessing pipeline for NLP datasets.
 
-Performs:
+**Performs:**
 
 - lowercasing
 - whitespace normalization
@@ -141,17 +141,17 @@ Performs:
 
 Exports both cleaned text and preprocessing logs.
 
-Run:
+**Run:**
 
 python text_cleaning_preprocessing.py
 --csv data.csv
 --text_col text
 
-Output:
+**Output:**
 
 outputs/text_preprocessing/<dataset_name>/
 
-Includes:
+**Includes:**
 
 - `<name>_cleaned_text.csv`
 - `<name>_sample_before_after.txt`
@@ -163,23 +163,23 @@ Includes:
 
 Compares Bag-of-Words and TF-IDF feature representations.
 
-Computes:
+**Computes:**
 
 - dimensionality and sparsity statistics
 - vocabulary size
 - top-k highest frequency / importance terms
 
-Run:
+**Run:**
 
 python bow_tfidf_vectorization_comparison.py
 --csv data.csv
 --text_col cleaned_text
 
-Output:
+**Output:**
 
 outputs/text_features/<dataset_name>/
 
-Includes:
+**Includes:**
 
 - `<name>_bow_features_stats.txt`
 - `<name>_tfidf_features_stats.txt`
@@ -189,30 +189,30 @@ Includes:
 
 ## 3) text_logreg_baseline_classifier.py
 
-Baseline text classifier using:
+**Baseline text classifier using:**
 
 - TF-IDF representation
 - Logistic Regression
 - train-only vocabulary fitting
 
-Computes:
+**Computes:**
 
 - train / test accuracy
 - macro-F1 score
 - confusion matrix
 
-Run:
+**Run:**
 
 python text_logreg_baseline_classifier.py
 --csv data.csv
 --text_col cleaned_text
 --label_col label
 
-Output:
+**Output:**
 
 outputs/text_classification_baseline/<dataset_name>/
 
-Includes:
+**Includes:**
 
 - `<name>_baseline_report.txt`
 - `<name>_predictions.csv`
@@ -221,31 +221,31 @@ Includes:
 
 ## 4) naive_bayes_text_classification.py
 
-Comparative experiment:
+**Comparative experiment:**
 
 - Multinomial Naive Bayes
 - Logistic Regression baseline
 
 Shared TF-IDF features across models.
 
-Evaluates:
+**Evaluates:**
 
 - accuracy
 - macro-F1
 - class-wise recall & F1
 
-Run:
+**Run:**
 
 python naive_bayes_text_classification.py
 --csv data.csv
 --text_col cleaned_text
 --label_col label
 
-Output:
+**Output:**
 
 outputs/text_model_comparison/<dataset_name>/
 
-Includes:
+**Includes:**
 
 - `<name>_model_comparison_report.txt`
 - `<name>_model_predictions.csv`
@@ -254,33 +254,33 @@ Includes:
 
 ## 5) hyperparameter_search_logreg_tfidf.py
 
-Small-scale hyperparameter search for:
+**Small-scale hyperparameter search for:**
 
 - TF-IDF configuration
 - Logistic Regression regularization
 
 Designed for limited-resource competition settings.
 
-Primary metric:
+**Primary metric:**
 
 - macro-F1
 
-Secondary:
+**Secondary:**
 
 - accuracy
 
-Run:
+**Run:**
 
 python hyperparameter_search_logreg_tfidf.py
 --csv data.csv
 --text_col cleaned_text
 --label_col label
 
-Output:
+**Output:**
 
 outputs/text_hyperparameter_search/<dataset_name>/
 
-Includes:
+**Includes:**
 
 - `<name>_search_results_ranking.csv`
 - `<name>_best_model_report.txt`
@@ -292,7 +292,7 @@ Includes:
 
 Misclassification analysis and qualitative debugging tool.
 
-Extracts:
+**Extracts:**
 
 - only wrong predictions
 - optional probability-based confidence gap
@@ -300,17 +300,17 @@ Extracts:
 
 Outputs human-interpretable analysis reports.
 
-Run:
+**Run:**
 
 python text_misclassification_inspection.py
 --pred_csv predictions.csv
 --text_col text
 
-Output:
+**Output:**
 
 outputs/text_error_analysis/<dataset_name>/
 
-Includes:
+**Includes:**
 
 - `<name>_misclassified_samples.csv`
 - `<name>_hard_cases_topN.csv`
@@ -321,15 +321,14 @@ Includes:
 ## Output Directory Structure
 
 outputs/
-├─ text_preprocessing/        
-├─ text_features/              
+├─ text_features/   
+├─ text_hyperparameter_search/ 
+├─ text_model_comparison/
+├─ text_preprocessing/      
 ├─ text_classification_baseline/
-├─ text_model_comparison/       
-├─ text_hyperparameter_search/  
-└─ text_error_analysis/         
+└─ text_error_analysis/       
 
-
-Each run produces:
+**Each run produces:**
 
 - processed datasets
 - prediction and evaluation tables
@@ -339,14 +338,14 @@ Each run produces:
 
 ## Dataset Notes
 
-This toolkit is designed for:
+**This toolkit is designed for:**
 
 - small to medium NLP datasets
 - academic research experiments
 - applied ML competitions
 - interpretability-focused workflows
 
-Recommended input:
+**Recommended input:**
 
 - pre-tokenized or cleaned text
 - labeled classification datasets

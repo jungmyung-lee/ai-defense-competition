@@ -176,14 +176,19 @@ def run_pipeline(image_path, csv_path):
 # =========================================================
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Automatically crop detected object regions from an image"
+        description="Automatically crop detected object regions from an image or video"
     )
 
     parser.add_argument(
         "--image",
         type=str,
-        required=True,
-        help="Path to original source image"
+        help="Path to original source image (for image mode)"
+    )
+
+    parser.add_argument(
+        "--video",
+        type=str,
+        help="Path to original source video (for video mode)"
     )
 
     parser.add_argument(
@@ -195,4 +200,11 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    run_pipeline(args.image, args.csv)
+    if not args.image and not args.video:
+        parser.error("You must provide either --image or --video")
+
+    if args.video:
+        run_video_pipeline(args.video, args.csv)
+    else:
+        run_image_pipeline(args.image, args.csv)
+

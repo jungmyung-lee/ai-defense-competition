@@ -170,9 +170,11 @@ def save_best_model_report(output_dir, base, best_row, y_test, y_pred):
     print(f"[+] Saved best-model report → {path}")
 
 
-def save_best_predictions(output_dir, base, y_test, y_pred):
+def save_best_predictions(output_dir, base, texts_test, y_test, y_pred,
+                          text_col_name="text"):
 
     df = pd.DataFrame({
+        text_col_name: texts_test,
         "y_true": y_test,
         "y_pred": y_pred
     })
@@ -181,6 +183,7 @@ def save_best_predictions(output_dir, base, y_test, y_pred):
     df.to_csv(path, index=False)
 
     print(f"[+] Saved best-model predictions → {path}")
+
 
 
 # =========================================================
@@ -259,7 +262,9 @@ def run_pipeline(csv_path,
 
     best_row = ranking_df.iloc[0]
     save_best_model_report(output_dir, base, best_row, y_test, best_pred)
-    save_best_predictions(output_dir, base, y_test, best_pred)
+    # X_test = texts_test
+    save_best_predictions(output_dir, base, X_test, y_test, best_pred, text_col_name="text")
+
 
     print("\n[ DONE ]\n")
 

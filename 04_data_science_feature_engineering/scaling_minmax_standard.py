@@ -99,6 +99,29 @@ def save_scaled_table(output_dir, base, name, scaled_df, original_df):
 
 
 # =========================================================
+# Save scaling parameters as CSV (for reproducibility)
+# =========================================================
+def save_scaling_params(output_dir, base, num_cols, mins, maxs, means, stds):
+    params_path = os.path.join(output_dir, f"{base}_scaling_params.csv")
+
+    rows = []
+    for c in num_cols:
+        rows.append({
+            "feature": c,
+            "min": mins[c],
+            "max": maxs[c],
+            "mean": means[c],
+            "std": stds[c]
+        })
+
+    df_params = pd.DataFrame(rows)
+    df_params.to_csv(params_path, index=False)
+
+    print(f"[+] Saved scaling parameters → {params_path}")
+
+
+
+# =========================================================
 # Save comparison report
 # =========================================================
 def save_scaling_report(output_dir, base, num_cols, mm_stats, std_stats):
@@ -168,6 +191,17 @@ def run_pipeline(csv_path):
         num_cols,
         (mins, maxs),
         (means, stds)
+    )
+
+    # ---- Parameter CSV for reproducibility ----
+    save_scaling_params(
+        output_dir,
+        base,
+        num_cols,
+        mins,
+        maxs,
+        means,
+        stds
     )
 
     print("\n[ DONE ]\n")

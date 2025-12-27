@@ -28,10 +28,10 @@ Although the actual competition environment, datasets, and test questions are co
 - [04 — Data Science & Feature Engineering](#04--data-science--feature-engineering)
 - [05 — Model Baseline & Evaluation](#05--model-baseline--evaluation)
 - [06 — Text Classification & Model Tuning](#06--text-classification--model-tuning)
-- [How This Repository Was Used for Competition Practice](#️-how-this-repository-was-used-for-competition-practice)
-- [Limitations](#️-limitations)
-- [Reflections & Learning Outcomes](#-reflections--learning-outcomes)
-- [Future Extensions](#-future-extensions)
+- [How This Repository Was Used for Competition Practice](#how-this-repository-was-used-for-competition-practice)
+- [Limitations](#limitations)
+- [Reflections & Learning Outcomes](#reflections--learning-outcomes)
+- [Future Extensions](#future-extensions)
 
 ---
 

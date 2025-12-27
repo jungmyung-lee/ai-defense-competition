@@ -99,6 +99,27 @@ def generate_center_mask(img, ratio=0.5):
 
     return mask
 
+# =========================================================
+# Example rect mask generator (user-defined ROI: x, y, w, h)
+# =========================================================
+def generate_rect_mask(img, x, y, w, h):
+    h_img, w_img = img.shape[:2]
+
+    mask = np.zeros((h_img, w_img), dtype=np.uint8)
+
+    x1 = max(0, x)
+    y1 = max(0, y)
+    x2 = min(x + w, w_img)
+    y2 = min(y + h, h_img)
+
+    if x1 >= x2 or y1 >= y2:
+        
+        return mask
+
+    mask[y1:y2, x1:x2] = 255
+    return mask
+
+
 
 # =========================================================
 # Save statistics report
@@ -143,7 +164,7 @@ def save_stats_report(output_dir, base, global_stats, channel_stats, mask_stats)
 # =========================================================
 # Pipeline
 # =========================================================
-def run_pipeline(image_path, use_mask):
+def run_pipeline(image_path, mask_mode, roi_x=0, roi_y=0, roi_w=0, roi_h=0):
     base = os.path.splitext(os.path.basename(image_path))[0]
     output_dir = os.path.join("outputs", "pixel_statistics", base)
 
@@ -180,13 +201,24 @@ def run_pipeline(image_path, use_mask):
     # -------------------------------
     mask_stats = None
 
-    if use_mask:
+    if mask_mode == 1:
+        # Center ROI mask
         mask = generate_center_mask(img, ratio=0.4)
 
-        mask_path = os.path.join(output_dir, f"{base}_mask.png")
+        mask_path = os.path.join(output_dir, f"{base}_mask_center.png")
         cv2.imwrite(mask_path, mask)
 
         mask_stats = compute_mask_stats(img, mask)
+
+    elif mask_mode == 2:
+        # User-defined rect ROI
+        mask = generate_rect_mask(img, roi_x, roi_y, roi_w, roi_h)
+
+        mask_path = os.path.join(output_dir, f"{base}_mask_user_rect.png")
+        cv2.imwrite(mask_path, mask)
+
+        mask_stats = compute_mask_stats(img, mask)
+
 
     # -------------------------------
     # Save report
@@ -211,13 +243,50 @@ if __name__ == "__main__":
         help="Path to input image"
     )
 
-    parser.add_argument(
+        parser.add_argument(
         "--mask",
         type=int,
         default=0,
-        help="Enable center ROI mask statistics (1 = use)"
+        help="Mask mode: 0 = no mask, 1 = center ROI mask, 2 = user-defined rectangle"
     )
 
-    args = parser.parse_args()
+    parser.add_argument(
+        "--roi_x",
+        type=int,
+        default=0,
+        help="Top-left x for user-defined ROI (used when --mask 2)"
+    )
 
-    run_pipeline(args.image, args.mask == 1)
+    parser.add_argument(
+        "--roi_y",
+        type=int,
+        default=0,
+        help="Top-left y for user-defined ROI (used when --mask 2)"
+    )
+
+    parser.add_argument(
+        "--roi_w",
+        type=int,
+        default=0,
+        help="Width for user-defined ROI (used when --mask 2)"
+    )
+
+    parser.add_argument(
+        "--roi_h",
+        type=int,
+        default=0,
+        help="Height for user-defined ROI (used when --mask 2)"
+    )
+
+
+        args = parser.parse_args()
+
+        run_pipeline(
+            args.image,
+            mask_mode=args.mask,
+            roi_x=args.roi_x,
+            roi_y=args.roi_y,
+            roi_w=args.roi_w,
+            roi_h=args.roi_h,
+        )
+    

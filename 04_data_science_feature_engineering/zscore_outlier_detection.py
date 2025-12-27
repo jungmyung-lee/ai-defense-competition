@@ -81,8 +81,15 @@ def compute_zscores(df):
 # Outlier detection rule
 # =========================================================
 def detect_outliers(zmat, threshold):
-    mask = (np.abs(zmat) >= threshold).any(axis=1)
-    return mask
+    abs_z = np.abs(zmat)
+
+    # Row-wise mask
+    row_mask = (abs_z >= threshold).any(axis=1)
+
+    # Column-wise outlier counts
+    col_counts = (abs_z >= threshold).sum(axis=0)
+
+    return row_mask, col_counts
 
 
 # =========================================================
@@ -100,7 +107,8 @@ def save_cleaned_table(output_dir, base, cleaned):
     print(f"[+] Saved cleaned dataset → {path}")
 
 
-def save_summary_report(output_dir, base, df, outliers, cols, threshold):
+def save_summary_report(output_dir, base, df, outliers, cols, threshold, col_counts=None):
+
     path = os.path.join(output_dir, f"{base}_outlier_report.txt")
 
     with open(path, "w", encoding="utf-8") as f:
@@ -119,6 +127,12 @@ def save_summary_report(output_dir, base, df, outliers, cols, threshold):
 
         f.write("\nClass balance notice:\n")
         f.write("Removing outliers may affect distribution — review before training.\n")
+
+        if col_counts is not None:
+            f.write("\nPer-column outlier counts:\n")
+            for c, cnt in zip(cols, col_counts):
+                f.write(f" - {c}: {int(cnt)}\n")
+
 
     print(f"[+] Saved analysis report → {path}")
 
@@ -141,14 +155,14 @@ def run_pipeline(csv_path, threshold):
 
     zmat, cols = compute_zscores(df)
 
-    mask = detect_outliers(zmat, threshold)
+    row_mask, col_counts = detect_outliers(zmat, threshold)
 
-    outliers = df[mask]
-    cleaned = df[~mask]
+    outliers = df[row_mask]
+    cleaned = df[~row_mask]
 
     save_outlier_table(output_dir, base, outliers)
     save_cleaned_table(output_dir, base, cleaned)
-    save_summary_report(output_dir, base, df, outliers, cols, threshold)
+    save_summary_report(output_dir, base, df, outliers, cols, threshold, col_counts)
 
     print("\n[ DONE ]\n")
 

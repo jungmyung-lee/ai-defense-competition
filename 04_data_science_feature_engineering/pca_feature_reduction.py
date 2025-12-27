@@ -98,17 +98,23 @@ def run_pca(X, n_components=None, var_target=None):
 # =========================================================
 # Save PCA dataset
 # =========================================================
-def save_pca_dataset(output_dir, base, df_original, X_pca):
+def save_pca_dataset(output_dir, base, df_original, X_pca, mode="append"):
     pca_cols = [f"PC{i+1}" for i in range(X_pca.shape[1])]
 
-    out_df = df_original.copy()
-    for i, name in enumerate(pca_cols):
-        out_df[name] = X_pca[:, i]
+    if mode == "append":
+        out_df = df_original.copy()
+        for i, name in enumerate(pca_cols):
+            out_df[name] = X_pca[:, i]
+    elif mode == "replace":
+        out_df = pd.DataFrame(X_pca, columns=pca_cols)
+    else:
+        raise ValueError(f"Unsupported PCA output mode: {mode}")
 
-    path = os.path.join(output_dir, f"{base}_pca_reduced.csv")
+    path = os.path.join(output_dir, f"{base}_pca_reduced_{mode}.csv")
     out_df.to_csv(path, index=False)
 
-    print(f"[+] Saved PCA reduced dataset → {path}")
+    print(f"[+] Saved PCA {mode} dataset → {path}")
+
 
 
 # =========================================================
@@ -159,7 +165,8 @@ def save_variance_report(output_dir, base, pca):
 # =========================================================
 # Pipeline
 # =========================================================
-def run_pipeline(csv_path, n_components, var_target):
+def run_pipeline(csv_path, n_components, var_target, mode="append"):
+
     base = os.path.splitext(os.path.basename(csv_path))[0]
     output_dir = os.path.join("outputs", "pca_reduction", base)
 
@@ -170,9 +177,10 @@ def run_pipeline(csv_path, n_components, var_target):
     print(f"Output : {output_dir}")
 
     if n_components:
-        print(f"Mode   : n_components = {n_components}")
+        print(f"PCA mode        : n_components = {n_components}")
     if var_target:
-        print(f"Mode   : variance target = {var_target}\n")
+        print(f"PCA mode        : variance target = {var_target}")
+    print(f"Output strategy : {mode}\n")
 
     df = load_dataset(csv_path)
 
@@ -184,7 +192,7 @@ def run_pipeline(csv_path, n_components, var_target):
         var_target=var_target
     )
 
-    save_pca_dataset(output_dir, base, df, X_pca)
+    save_pca_dataset(output_dir, base, df, X_pca, mode=mode)
     save_loading_matrix(output_dir, base, feature_names, pca)
     save_variance_report(output_dir, base, pca)
 
@@ -220,10 +228,21 @@ if __name__ == "__main__":
         help="Target explained variance ratio (e.g., 0.9)"
     )
 
+    parser.add_argument(
+        "--mode",
+        type=str,
+        default="append",
+        choices=["append", "replace"],
+        help="How to combine PCA components with original features: 'append' or 'replace'"
+    )
+
+
     args = parser.parse_args()
 
     run_pipeline(
         args.csv,
         args.n_components,
-        args.var
+        args.var,
+        mode=args.mode
     )
+

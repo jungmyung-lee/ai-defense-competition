@@ -121,18 +121,22 @@ def draw_detections(img_bgr, detections):
 # =========================================================
 # Save Results
 # =========================================================
-def save_results(output_dir, base, vis_img, detections):
+def save_results(output_dir, base, vis_img, detections, image_id):
     # Save visualization
     vis_path = os.path.join(output_dir, f"{base}_yolov8_result.png")
     cv2.imwrite(vis_path, vis_img)
 
     # Save detection table
     df = pd.DataFrame(detections)
+
+    df.insert(0, "image", image_id)
+
     csv_path = os.path.join(output_dir, f"{base}_yolov8_detections.csv")
     df.to_csv(csv_path, index=False)
 
     print(f"[+] Saved visualization → {vis_path}")
     print(f"[+] Saved detection CSV → {csv_path}")
+
 
 
 # =========================================================
@@ -155,8 +159,10 @@ def run_pipeline(image_path, model_path):
 
     vis = draw_detections(img, detections)
 
-    save_results(output_dir, base, vis, detections)
-
+    image_id = os.path.basename(image_path)
+    
+    save_results(output_dir, base, vis, detections, image_id)
+    
     print("\n[ DONE ]\n")
 
 

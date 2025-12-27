@@ -83,12 +83,18 @@ def infer_source_column(df):
 # =========================================================
 # Normalize export format
 # =========================================================
-def normalize_detection_table(df, source_key):
+def normalize_detection_table(df, source_key, default_source_id=None):
     rows = []
 
     for _, r in df.iterrows():
+        if source_key:
+            source_value = r[source_key]
+        else:
+            
+            source_value = default_source_id if default_source_id is not None else 0
+
         rows.append({
-            "source_id": r[source_key] if source_key else 0,
+            "source_id": source_value,
             "class_id": int(r["class_id"]),
             "class_name": str(r["class_name"]),
             "confidence": float(r["confidence"]),
@@ -99,6 +105,7 @@ def normalize_detection_table(df, source_key):
         })
 
     return pd.DataFrame(rows)
+
 
 
 # =========================================================
@@ -155,8 +162,10 @@ def run_pipeline(csv_path):
 
     source_col, mode = infer_source_column(df)
     print(f"[INFO] Source column mode = {mode}")
+    
+   
+    export_df = normalize_detection_table(df, source_col, default_source_id=base)
 
-    export_df = normalize_detection_table(df, source_col)
 
     save_export(output_dir, base, export_df)
     save_summary_report(output_dir, base, export_df)

@@ -93,13 +93,16 @@ def compute_channel_stats(channel):
 def compute_histogram(channel):
     flat = channel.flatten()
 
-    # 256-bin grayscale histogram (0~255)
-    hist, _ = np.histogram(flat, bins=256, range=(0, 255))
+    # 256-bin grayscale histogram over integer intensity range 0–255
+    # Using range (0, 256) ensures bin alignment with discrete pixel values
+    hist, _ = np.histogram(flat, bins=256, range=(0, 256))
 
-    # Normalize ratio distribution also 저장
+    # Store normalized histogram ratio distribution
     hist_ratio = hist / np.sum(hist)
 
     return hist, hist_ratio
+
+
 
 
 # =========================================================

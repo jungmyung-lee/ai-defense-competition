@@ -15,6 +15,10 @@ Although the actual competition environment, datasets, and test questions are co
 - classical CV and YOLO-based detection pipelines
 - baseline modeling, evaluation, and error analysis under constraints
 
+![yolo_map](https://github.com/user-attachments/assets/0e006c93-ace2-4ec2-89b1-88e00b4aa6d2)
+> Source: Ultralytics — "How to Run Ultralytics YOLO11 Through the CLI"  
+> https://www.ultralytics.com/blog/how-to-run-ultralytics-yolo11-through-the-cli
+
 ---
 
 ## Table of Contents

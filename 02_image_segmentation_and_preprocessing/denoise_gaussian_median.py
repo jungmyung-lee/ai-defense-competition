@@ -117,6 +117,10 @@ def apply_filters(img, include_bilateral):
 def save_report(output_dir, base, stats):
     path = os.path.join(output_dir, f"{base}_denoise_analysis.txt")
 
+    # baseline: original 이미지의 variance / edge_energy
+    orig_var = stats["original"]["variance"]
+    orig_edge = stats["original"]["edge_energy"]
+
     with open(path, "w", encoding="utf-8") as f:
         f.write("DENOISING FILTER COMPARISON REPORT\n")
         f.write(f"Generated: {datetime.now()}\n\n")
@@ -125,11 +129,25 @@ def save_report(output_dir, base, stats):
             f.write(f"[{name}]\n")
             f.write(f" - variance     : {s['variance']}\n")
             f.write(f" - edge_energy  : {s['edge_energy']}\n")
+
+            # original은 기준값이니까 reduction은 계산하지 않음
+            if name != "original":
+                var_reduction = orig_var - s["variance"]
+                # 0으로 나누기 방지
+                if orig_var != 0:
+                    var_reduction_ratio = var_reduction / orig_var
+                else:
+                    var_reduction_ratio = 0.0
+
+                f.write(f" - variance_reduction       : {var_reduction}\n")
+                f.write(f" - variance_reduction_ratio : {var_reduction_ratio}\n")
+
             f.write("\n")
 
         f.write("Interpretation Guide:\n")
         f.write(" - Lower variance  = stronger noise suppression\n")
         f.write(" - Higher edge_energy = better edge preservation\n")
+        f.write(" - variance_reduction / ratio are computed w.r.t. the original image.\n")
 
     print(f"[+] Saved denoise analysis → {path}")
 

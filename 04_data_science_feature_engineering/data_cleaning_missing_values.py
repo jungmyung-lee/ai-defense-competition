@@ -75,6 +75,35 @@ def compute_missing_summary(df):
 
 
 # =========================================================
+# Drop rows/columns based on missing ratio threshold
+# =========================================================
+def drop_by_missing_ratio(df, threshold, axis="column"):
+    """
+    Drop columns or rows whose missing-value ratio exceeds the given threshold.
+    axis: "column" or "row"
+    threshold: float in [0, 1]
+    """
+    if threshold is None:
+        return df, None
+
+    if axis == "column":
+        miss_ratio = df.isna().mean()
+        to_drop = miss_ratio[miss_ratio > threshold].index.tolist()
+        df_dropped = df.drop(columns=to_drop)
+        return df_dropped, {"axis": "column", "dropped": to_drop, "threshold": threshold}
+
+    elif axis == "row":
+        miss_ratio = df.isna().mean(axis=1)
+        to_drop_idx = df.index[miss_ratio > threshold].tolist()
+        df_dropped = df.drop(index=to_drop_idx)
+        return df_dropped, {"axis": "row", "dropped": to_drop_idx, "threshold": threshold}
+
+    else:
+        raise ValueError(f"Unsupported drop axis: {axis}")
+
+
+
+# =========================================================
 # Numeric column imputation
 # =========================================================
 def fill_numeric(df, strategy="mean"):
@@ -129,7 +158,7 @@ def save_cleaned_dataset(output_dir, base, df):
     print(f"[+] Saved cleaned dataset → {out_path}")
 
 
-def save_missing_report(output_dir, base, before, after):
+def save_missing_report(output_dir, base, before, after, drop_info=None):
     path = os.path.join(output_dir, f"{base}_missing_value_report.txt")
 
     with open(path, "w", encoding="utf-8") as f:
@@ -144,13 +173,22 @@ def save_missing_report(output_dir, base, before, after):
         f.write(after.to_string())
         f.write("\n\n")
 
+        if drop_info is not None:
+            f.write("[ DROPPED OBJECTS BASED ON MISSING RATIO ]\n")
+            f.write(f"Axis      : {drop_info['axis']}\n")
+            f.write(f"Threshold : {drop_info['threshold']}\n")
+            f.write("Dropped   :\n")
+            for obj in drop_info["dropped"]:
+                f.write(f" - {obj}\n")
+
     print(f"[+] Saved missing value report → {path}")
+
 
 
 # =========================================================
 # Pipeline
 # =========================================================
-def run_pipeline(csv_path, num_strategy, cat_strategy):
+def run_pipeline(csv_path, num_strategy, cat_strategy, drop_thresh=None, drop_axis="column"):
     base = os.path.splitext(os.path.basename(csv_path))[0]
     output_dir = os.path.join("outputs", "data_cleaning", base)
 
@@ -164,15 +202,24 @@ def run_pipeline(csv_path, num_strategy, cat_strategy):
 
     df = load_csv_dataset(csv_path)
 
+    # 1) Before cleaning summary
     before_stats = compute_missing_summary(df)
 
+    # 2) Optional drop by missing-value ratio
+    drop_info = None
+    if drop_thresh is not None:
+        df, drop_info = drop_by_missing_ratio(df, drop_thresh, axis=drop_axis)
+
+    # 3) Imputation
     df = fill_numeric(df, num_strategy)
     df = fill_categorical(df, cat_strategy)
 
+    # 4) After cleaning summary
     after_stats = compute_missing_summary(df)
 
     save_cleaned_dataset(output_dir, base, df)
-    save_missing_report(output_dir, base, before_stats, after_stats)
+    save_missing_report(output_dir, base, before_stats, after_stats, drop_info)
+
 
     print("\n[ DONE ]\n")
 
@@ -208,10 +255,29 @@ if __name__ == "__main__":
         help="Categorical fill strategy"
     )
 
+    parser.add_argument(
+        "--drop_thresh",
+        type=float,
+        default=None,
+        help="Optional missing-value ratio threshold (0~1) used to drop rows/columns"
+    )
+
+    parser.add_argument(
+        "--drop_axis",
+        type=str,
+        default="column",
+        choices=["column", "row"],
+        help="Apply drop_thresh to 'column' or 'row' (default: column)"
+    )
+
+
     args = parser.parse_args()
 
     run_pipeline(
-        args.csv,
-        args.num_strategy,
-        args.cat_strategy
+    args.csv,
+    args.num_strategy,
+    args.cat_strategy,
+    drop_thresh=args.drop_thresh,
+    drop_axis=args.drop_axis
+        
     )

@@ -68,7 +68,14 @@ def sobel_edge(img_gray):
 
     mag = np.sqrt((sobel_x ** 2) + (sobel_y ** 2))
 
-    mag_norm = np.uint8(255 * (mag / np.max(mag) + 1e-6))
+    max_val = np.max(mag)
+    if max_val < 1e-6:
+        
+        mag_norm = np.zeros_like(img_gray, dtype=np.uint8)
+    else:
+        
+        mag_norm = np.uint8(255 * (mag / (max_val + 1e-6)))
+
 
     _, sobel_binary = cv2.threshold(mag_norm, 50, 255, cv2.THRESH_BINARY)
 
@@ -104,8 +111,11 @@ def compute_edge_stats(edge_map):
 # =========================================================
 # Save Edge Statistics Report
 # =========================================================
-def save_stats_report(output_dir, base_name, sobel_stats, canny_stats):
-    path = os.path.join(output_dir, f"{base_name}_edge_comparison_stats.txt")
+def save_stats_report(output_dir, base_name, sobel_stats, canny_stats, low_t, high_t):
+    path = os.path.join(
+        output_dir,
+        f"{base_name}_edge_comparison_{low_t}_{high_t}_stats.txt"
+    )
 
     with open(path, "w", encoding="utf-8") as f:
         f.write("EDGE DETECTION COMPARISON REPORT\n")
@@ -177,7 +187,8 @@ def run_pipeline(image_path, low_t, high_t):
     # -------------------------------
     # Save comparison report
     # -------------------------------
-    save_stats_report(output_dir, base, sobel_stats, canny_stats)
+    save_stats_report(output_dir, base, sobel_stats, canny_stats, low_t, high_t)
+
 
     print("\n[ DONE ]\n")
 

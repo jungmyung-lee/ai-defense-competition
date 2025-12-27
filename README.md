@@ -63,7 +63,7 @@ This repository was created to simulate that pressure by:
 
 One recurring theme in the competition setting was:
 
-> “How do we adapt generic models (e.g., standard YOLO) to defense-specific objects and classes?”
+> “How do we adapt generic models (e.g., standard YOLO) to **defense-specific objects and classes?”**
 
 Example strategic questions I explored:
 

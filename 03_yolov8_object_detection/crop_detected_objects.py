@@ -113,6 +113,11 @@ def save_crop_reports(output_dir, base, records):
 
         for r in records:
             f.write(f"[Crop {r['crop_id']}]\n")
+
+            
+            if "frame" in r:
+                f.write(f" - frame: {r['frame']}\n")
+
             f.write(f" - file : {r['crop_path']}\n")
             f.write(f" - class: {r['class_name']}\n")
             f.write(f" - conf : {r['confidence']}\n")
@@ -122,16 +127,17 @@ def save_crop_reports(output_dir, base, records):
     print(f"[+] Saved crop summary TXT → {txt_path}")
 
 
+
 # =========================================================
 # Main Crop Pipeline
 # =========================================================
-def run_pipeline(image_path, csv_path):
+def run_image_pipeline(image_path, csv_path):
     base = os.path.splitext(os.path.basename(image_path))[0]
     output_dir = os.path.join("outputs", "object_crops", base)
 
     ensure_dir(output_dir)
 
-    print("\n[ OBJECT ROI CROP PIPELINE ]")
+    print("\n[ OBJECT ROI CROP PIPELINE - IMAGE MODE ]")
     print(f"Image : {image_path}")
     print(f"CSV   : {csv_path}")
     print(f"Output: {output_dir}\n")
@@ -169,6 +175,88 @@ def run_pipeline(image_path, csv_path):
     save_crop_reports(output_dir, base, crop_records)
 
     print("\n[ DONE ]\n")
+
+
+
+def run_video_pipeline(video_path, csv_path):
+    base = os.path.splitext(os.path.basename(video_path))[0]
+    output_dir = os.path.join("outputs", "object_crops", base)
+
+    ensure_dir(output_dir)
+
+    print("\n[ OBJECT ROI CROP PIPELINE - VIDEO MODE ]")
+    print(f"Video : {video_path}")
+    print(f"CSV   : {csv_path}")
+    print(f"Output: {output_dir}\n")
+
+    df = load_detection_table(csv_path)
+
+    
+    if "frame" in df.columns:
+        frame_col = "frame"
+    elif "source_id" in df.columns:
+        frame_col = "source_id"
+    else:
+        raise ValueError(
+            "[ERROR] Video mode requires 'frame' or 'source_id' column in CSV"
+        )
+
+    
+    frame_groups = {int(k): v for k, v in df.groupby(frame_col)}
+
+    cap = cv2.VideoCapture(video_path)
+    if not cap.isOpened():
+        raise RuntimeError(f"[ERROR] Failed to open video: {video_path}")
+
+    crop_records = []
+    frame_idx = 0
+    crop_id = 1
+
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+
+        if frame_idx in frame_groups:
+            g = frame_groups[frame_idx]
+
+            for _, row in g.iterrows():
+                roi = crop_roi(
+                    frame,
+                    int(row["x"]),
+                    int(row["y"]),
+                    int(row["w"]),
+                    int(row["h"])
+                )
+
+                crop_name = f"{base}_f{frame_idx}_crop_{crop_id}.png"
+                crop_path = os.path.join(output_dir, crop_name)
+
+                cv2.imwrite(crop_path, roi)
+
+                rec = {
+                    "crop_id": crop_id,
+                    "frame": frame_idx,  
+                    "crop_path": crop_path,
+                    "class_name": str(row["class_name"]),
+                    "confidence": float(row["confidence"]),
+                    "x": int(row["x"]),
+                    "y": int(row["y"]),
+                    "w": int(row["w"]),
+                    "h": int(row["h"])
+                }
+                crop_records.append(rec)
+                crop_id += 1
+
+        frame_idx += 1
+
+    cap.release()
+
+    save_crop_reports(output_dir, base, crop_records)
+
+    print("\n[ DONE ]\n")
+
+
 
 
 # =========================================================

@@ -151,7 +151,9 @@ def run_pipeline(image_path, alpha, beta):
     cv2.imwrite(manual_path, manual)
 
     manual_stats = compute_stats(manual)
-    save_stats_report(output_dir, base_name, "alpha_beta", manual_stats)
+    
+    manual_tag = f"alpha{alpha}_beta{beta}"
+    save_stats_report(output_dir, base_name, manual_tag, manual_stats)
 
     # Automatic Contrast Stretching
     auto = auto_contrast_stretch(img)

@@ -121,11 +121,9 @@ def evaluate_model(clf, vectorizer, X_train, X_test, y_train, y_test):
 # =========================================================
 # Save Outputs
 # =========================================================
-def save_results(output_dir, base, results):
-
-    # 1) Metrics report
+def save_results(output_dir, base, results, X_test, text_col_name="text"):
+    # 1) Metrics report (그대로)
     path_report = os.path.join(output_dir, f"{base}_baseline_report.txt")
-
     with open(path_report, "w", encoding="utf-8") as f:
         f.write("BASELINE TEXT CLASSIFICATION REPORT\n")
         f.write(f"Generated: {datetime.now()}\n\n")
@@ -144,8 +142,9 @@ def save_results(output_dir, base, results):
 
     print(f"[+] Saved evaluation report → {path_report}")
 
-    # 2) Save predictions table
+    # 2) 예측 테이블에 text + y_true + y_pred 저장
     pred_table = pd.DataFrame({
+        text_col_name: X_test,
         "y_true": results["y_test"],
         "y_pred": results["y_pred"]
     })
@@ -154,6 +153,7 @@ def save_results(output_dir, base, results):
     pred_table.to_csv(path_pred, index=False)
 
     print(f"[+] Saved predictions → {path_pred}")
+
 
 
 # =========================================================
@@ -193,12 +193,14 @@ def run_pipeline(csv_path,
     clf, vectorizer = train_tfidf_logreg(X_train, y_train)
 
     results = evaluate_model(
-        clf, vectorizer,
-        X_train, X_test,
-        y_train, y_test
+    clf, vectorizer,
+    X_train, X_test,
+    y_train, y_test
     )
 
-    save_results(output_dir, base, results)
+    
+    save_results(output_dir, base, results, X_test, text_col_name="text")
+
 
     print("\n[ DONE ]\n")
 

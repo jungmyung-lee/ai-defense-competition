@@ -102,21 +102,28 @@ def compute_class_stats(df):
 # Frame-wise statistics (video only)
 # =========================================================
 def compute_frame_stats(df):
-    if "frame" not in df.columns:
+    
+    if "frame" in df.columns:
+        frame_col = "frame"
+    elif "source_id" in df.columns:
+        frame_col = "source_id"
+    else:
         return None
 
-    groups = df.groupby("frame")
+    groups = df.groupby(frame_col)
 
     rows = []
 
-    for frame, g in groups:
+    for frame_value, g in groups:
         rows.append({
-            "frame": int(frame),
+            
+            "frame": int(frame_value),
             "object_count": len(g),
             "unique_classes": len(g["class_name"].unique())
         })
 
     return pd.DataFrame(rows).sort_values("frame")
+
 
 
 # =========================================================

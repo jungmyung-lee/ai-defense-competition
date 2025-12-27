@@ -69,7 +69,31 @@ def compute_pixel_stats(img):
         "black_pixels": black,
         "white_ratio": round(white / total, 6),
         "black_ratio": round(black / total, 6)
-    }
+    
+
+# =========================================================
+# Ensure binary (auto-Otsu for grayscale inputs)
+# =========================================================
+def ensure_binary(img):
+    """
+    If the image already looks binary (0/255 only), return as is.
+    Otherwise, apply Otsu thresholding to obtain a binary image.
+    """
+    unique_vals = np.unique(img)
+
+    # purely black or purely white도 edge case로 허용
+    if np.array_equal(unique_vals, [0]) \
+       or np.array_equal(unique_vals, [255]) \
+       or np.array_equal(unique_vals, [0, 255]):
+        return img
+
+    # otherwise → Otsu binarization
+    _, bin_img = cv2.threshold(
+        img, 0, 255,
+        cv2.THRESH_BINARY + cv2.THRESH_OTSU
+    )
+    return bin_img
+
 
 
 # =========================================================
@@ -155,25 +179,35 @@ def run_pipeline(image_path, k_size, shape):
     print(f"Output : {output_dir}")
     print(f"Kernel : size={k_size}, shape={shape}\n")
 
+    # 1) Load original image (grayscale)
     img = load_image(image_path)
 
-    # Save original
+    # 2) Save original image for reference
     orig_path = os.path.join(output_dir, f"{base}_original.png")
     cv2.imwrite(orig_path, img)
 
-    before_stats = compute_pixel_stats(img)
+    # 3) Ensure binary image (keep as-is if already binary, otherwise apply Otsu thresholding)
+    bin_img = ensure_binary(img)
 
+    # 3-1) Save binary image to make the analysis pipeline more explicit
+    bin_path = os.path.join(output_dir, f"{base}_binary.png")
+    cv2.imwrite(bin_path, bin_img)
+
+    # 4) Compute pixel statistics on the binary image (baseline before morphology)
+    before_stats = compute_pixel_stats(bin_img)
+
+    # 5) Build structuring element kernel
     kernel = build_kernel(k_size, shape)
 
-    # Apply ops
-    results, after_stats = apply_morphology(img, kernel)
+    # 6) Apply morphology operations on the binary image
+    results, after_stats = apply_morphology(bin_img, kernel)
 
-    # Save images
+    # 7) Save morphology result images
     for name, out in results.items():
         path = os.path.join(output_dir, f"{base}_{name}.png")
         cv2.imwrite(path, out)
 
-    # Save report
+    # 8) Save comparison statistics report
     save_stats_report(output_dir, base, before_stats, after_stats)
 
     print("\n[ DONE ]\n")

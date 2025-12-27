@@ -135,14 +135,17 @@ pip install numpy pandas scikit-learn
 
 **Run:**
 
-python baseline_logreg_classifier.py
---train dataset_train.csv
---test dataset_test.csv
---label label
+python baseline_logreg_classifier.py 
+  --train dataset_train.csv 
+  --test dataset_test.csv 
+  --label label 
+  --seed 42
 
 **Output:**
 
 outputs/baseline_logreg/<dataset_name>/
+`<dataset_name>` is derived from the **training CSV file name** (without extension).  
+For example, `dataset_train.csv` → `outputs/baseline_logreg/dataset_train/`.
 
 **Includes:**
 
@@ -153,12 +156,14 @@ outputs/baseline_logreg/<dataset_name>/
 
 ## 2) cross_validation_scores.py
 
+- For `logreg`, features are standardized with `StandardScaler`; for `rf`, raw features are used.
+
 **Stratified K-Fold Cross-Validation Score Runner**
 
 **Supports selectable baseline models:**
 
-- Logistic Regression
-- RandomForest
+- Logistic Regression (`--model logreg`)
+- RandomForest (`--model rf`)
 
 **Computes per-fold:**
 
@@ -169,13 +174,21 @@ outputs/baseline_logreg/<dataset_name>/
 
 - mean & std across folds
 
-**Run:**
+**Run (Logistic Regression example):**
 
-python cross_validation_scores.py
---csv data.csv
---label label
---k 5
---model logreg
+python cross_validation_scores.py 
+  --csv data.csv 
+  --label label 
+  --k 5 
+  --model logreg
+
+**Run (RandomForest example):**
+
+python cross_validation_scores.py 
+  --csv data.csv 
+  --label label 
+  --k 5 
+  --model rf
 
 **Output:**
 
@@ -192,10 +205,10 @@ outputs/cross_validation/<dataset_name>/
 
 **Unified Evaluation Report Generator**
 
-Input CSV must contain:
+Input CSV must contain two columns:
 
-y_true
-y_pred
+- `y_true`: ground-truth labels  
+- `y_pred`: model predictions
 
 **Computes:**
 
@@ -239,14 +252,24 @@ outputs/evaluation_report/<result_name>/
 
 **Run:**
 
-python randomforest_classification.py
---train dataset_train.csv
---test dataset_test.csv
---label label
+python randomforest_classification.py 
+  --train dataset_train.csv 
+  --test dataset_test.csv 
+  --label label 
+  --trees 200 
+  --depth None 
+  --seed 42
+
+- `--trees`: number of trees (`n_estimators`, default: 200)  
+- `--depth`: maximum tree depth (`max_depth`, default: None)  
+- `--seed`: random_state for reproducibility (default: 42)
 
 **Output:**
 
 outputs/randomforest/<dataset_name>/
+
+`<dataset_name>` is derived from the **training CSV file name** (without extension).  
+For example, `dataset_train.csv` → `outputs/randomforest/dataset_train/`.
 
 **Includes:**
 
@@ -262,10 +285,10 @@ outputs/randomforest/<dataset_name>/
 
 **Features:**
 
-- stratified splitting by label
+- stratified splitting by label (always preserves class ratios where possible)
 - fixed random seed
-- class-distribution reports
-
+- class-distribution reports before and after the split
+  
 **Exports:**
 
 - train CSV
@@ -282,6 +305,8 @@ python train_test_split_pipeline.py
 **Output:**
 
 outputs/train_test_split/<dataset_name>/
+
+`<dataset_name>` is derived from the **original CSV file name** (without extension).
 
 **Includes:**
 

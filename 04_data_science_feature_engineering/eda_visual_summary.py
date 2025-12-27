@@ -57,7 +57,8 @@ def load_dataset(path):
 # =========================================================
 # Save histogram per numeric column
 # =========================================================
-def save_numeric_histograms(df, output_dir, base):
+def save_numeric_histograms(df, output_dir, base, num_bins=30):
+
     num_cols = df.select_dtypes(include=[np.number]).columns
 
     paths = []
@@ -66,7 +67,7 @@ def save_numeric_histograms(df, output_dir, base):
         values = df[col].dropna()
 
         plt.figure()
-        plt.hist(values, bins=30)
+        plt.hist(values, bins=num_bins)
         plt.xlabel(col)
         plt.ylabel("count")
         plt.title(f"Histogram — {col}")
@@ -200,7 +201,8 @@ def save_summary_report(output_dir, base, df, num_cols, cat_cols):
 # =========================================================
 # Pipeline
 # =========================================================
-def run_pipeline(csv_path):
+def run_pipeline(csv_path, num_bins=30, max_classes=12):
+
     base = os.path.splitext(os.path.basename(csv_path))[0]
     output_dir = os.path.join("outputs", "eda_visual", base)
 
@@ -212,14 +214,25 @@ def run_pipeline(csv_path):
 
     df = load_dataset(csv_path)
 
-    num_cols = save_numeric_histograms(df, output_dir, base)
-    save_boxplots(df, output_dir, base)
+    num_cols = save_numeric_histograms(df, output_dir, base, num_bins=num_bins)
+    box_cols = save_boxplots(df, output_dir, base)
 
-    cat_cols = save_categorical_counts(df, output_dir, base)
+    cat_cols = save_categorical_counts(df, output_dir, base, max_classes=max_classes)
 
-    save_correlation_heatmap(df, output_dir, base)
+    corr_path = save_correlation_heatmap(df, output_dir, base)
 
-    save_summary_report(output_dir, base, df, num_cols, cat_cols)
+    save_summary_report(
+        output_dir,
+        base,
+        df,
+        num_cols,
+        cat_cols,
+        hist_paths=None,   
+        box_paths=None,
+        cat_paths=None,
+        corr_path=corr_path
+    )
+
 
     print("\n[ DONE ]\n")
 
@@ -239,6 +252,26 @@ if __name__ == "__main__":
         help="Path to CSV dataset"
     )
 
+    parser.add_argument(
+        "--num_bins",
+        type=int,
+        default=30,
+        help="Number of bins for numeric histograms (default=30)"
+    )
+
+    parser.add_argument(
+        "--max_classes",
+        type=int,
+        default=12,
+        help="Maximum number of categories to visualize per categorical column (default=12)"
+    )
+
+
     args = parser.parse_args()
 
-    run_pipeline(args.csv)
+    run_pipeline(
+        args.csv,
+        num_bins=args.num_bins,
+        max_classes=args.max_classes
+    )
+

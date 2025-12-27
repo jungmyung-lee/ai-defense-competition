@@ -135,17 +135,23 @@ def evaluate_model(model, X_test, y_test, labels, name):
     return results
 
 
-def save_prediction_table(output_dir, base, y_test, res_nb, res_lr):
+def save_prediction_table(output_dir, base, X_test, y_test, res_nb, res_lr,
+                          text_col_name="text"):
+
+    
     df = pd.DataFrame({
+        text_col_name: X_test,
         "y_true": y_test,
-        "pred_nb": res_nb["y_pred"],
-        "pred_logreg": res_lr["y_pred"]
+        "y_pred": res_lr["y_pred"],      
+        "pred_nb": res_nb["y_pred"],     
+        "pred_logreg": res_lr["y_pred"]  
     })
 
     path = os.path.join(output_dir, f"{base}_model_predictions.csv")
     df.to_csv(path, index=False)
 
     print(f"[+] Saved prediction comparison → {path}")
+
 
 
 # =========================================================
@@ -245,7 +251,8 @@ def run_pipeline(csv_path,
 
     # Save report + predictions
     save_comparison_report(output_dir, base, labels, res_nb, res_lr)
-    save_prediction_table(output_dir, base, y_test, res_nb, res_lr)
+    save_prediction_table(output_dir, base, X_test, y_test, res_nb, res_lr, text_col_name="text")
+
 
     print("\n[ DONE ]\n")
 
